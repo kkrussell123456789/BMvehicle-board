@@ -1,0 +1,25 @@
+name: Auto-Update GitHub Pages Content
+
+on:
+  workflow_dispatch: # allows manual run
+  schedule:
+    - cron: '*/30 * * * *'  # runs every 30 minutes
+
+jobs:
+  update-html:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download latest HTML from your hosted URL
+        run: |
+          curl -L "https://kkrussell123456789.github.io/BMvehicle-board/vehicle-work-orders.html" -o index.html
+
+      - name: Commit and push updated HTML
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add index.html
+          git commit -m "Auto-update HTML [skip ci]" || echo "No changes"
+          git push
